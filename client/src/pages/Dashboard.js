@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Button, Box, Grid, Card, CardContent, Avatar, CardActions, Drawer, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Grid, Stack, Typography , Container, Button, Box, List, ListItem, ListItemText, Divider } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import ContactCard from "../components/ContactCard";
 import ContactSection from "../components/ContactSection";
+import ContactCard from "../components/ContactCard";
 
 const Dashboard = () => {
     const { userId } = useUser();
@@ -14,7 +14,8 @@ const Dashboard = () => {
 
     const contactCategories = {
         práce: 'Pracovní kontakty',
-        přátelé: 'Přátelé',
+        škola: 'Školní kontakty',
+        dovolená: 'Kontakty z dovolené',
         koníčky: 'Kontakty z koníčků',
         ostatní: 'Ostatní kontakty',
     };
@@ -38,26 +39,15 @@ const Dashboard = () => {
         navigate('/add-contact');
     };
 
-    const handleEditContact = (contactId) => {
-        navigate(`/edit-contact/${contactId}`);
-    };
-
-    const handleViewDetails = (contactId) => {
-        navigate(`/contact-details/${contactId}`);
-    };
-
     const filteredContacts = contacts.filter(contact => contact.contactSource === selectedCategory);
 
     return (
-        <Container sx={{ display: 'flex', height: '100vh' }}>
-            {/* Levý postranní panel */}
-            <Drawer
-                variant="permanent"
-                anchor="left"
-                sx={{ width: 240, flexShrink: 0, [`& .MuiDrawer-paper`]: { width: 240, boxSizing: 'border-box' } }}
-            >
-                <Box sx={{ padding: 2 }}>
+        <Container sx={{ display: 'flex', minHeight: '100vh', paddingTop: 3, width: '100%', maxWidth: 'none' }}>
+            {/* Levý panel jako samostatná sekce */}
+            <Box sx={{ width: '20%', padding: 2, borderRight: '1px solid #ddd' }}>
+                <Stack spacing={2}> {/* Použijeme Stack pro vertikální uspořádání */}
                     <Button
+                        sx={{ borderRadius: 10, boxShadow: 3 }}
                         variant="contained"
                         color="primary"
                         onClick={handleAddContact}
@@ -65,53 +55,48 @@ const Dashboard = () => {
                     >
                         Přidat nový kontakt
                     </Button>
-                </Box>
-                <Divider />
-                <List>
-                    {Object.keys(contactCategories).map((categoryKey) => (
-                        <ListItem
-                            button
-                            key={categoryKey}
-                            selected={selectedCategory === categoryKey}
-                            onClick={() => setSelectedCategory(categoryKey)}
-                        >
-                            <ListItemText primary={contactCategories[categoryKey]} />
-                        </ListItem>
-                    ))}
-                </List>
-            </Drawer>
+                    <Divider />
 
-            {/* Pravá strana s kontakty */}
-            <Box component="main" sx={{ flexGrow: 1, padding: 3 }}>
+                    {/* Seznam kategorií jako tlačítka */}
+                    {Object.keys(contactCategories).map((categoryKey) => (
+                        <Button
+                            key={categoryKey}
+                            variant="outlined" // Tlačítka jako obrysová pro lepší vzhled
+                            fullWidth
+                            onClick={() => setSelectedCategory(categoryKey)}
+                            sx={{
+                                textAlign: 'left', // Zarovnáme text doleva
+                                borderColor: selectedCategory === categoryKey ? '#1976d2' : '#ddd', // Změna barvy okraje vybrané kategorie
+                                color: selectedCategory === categoryKey ? '#1976d2' : 'inherit',
+                                borderRadius: 10,
+                                boxShadow: 3,// Změna barvy textu vybrané kategorie
+                            }}
+                        >
+                            {contactCategories[categoryKey]}
+                        </Button>
+                    ))}
+                </Stack>
+            </Box>
+
+            <Box sx={{ flexGrow: 1, padding: 2, display: 'flex', flexDirection: 'column', width: '75%' }}>
+                {/* Zobrazení kategorie */}
                 <Typography variant="h4" gutterBottom>
                     {contactCategories[selectedCategory]}
                 </Typography>
 
-                <Grid container spacing={2}>
-                    {filteredContacts.map(contact => (
-                        <Grid item xs={12} sm={6} md={4} key={contact._id}>
-                            <Card>
-                                <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <Avatar sx={{ marginRight: 2 }}>{contact.name.charAt(0)}</Avatar>
-                                    <Box>
-                                        <Typography variant="h6">{contact.name} {contact.surname}</Typography>
-                                        <Typography variant="body2" color="textSecondary">{contact.company}</Typography>
-                                    </Box>
-                                </CardContent>
-                                <CardActions>
-                                    <Button size="small" color="primary" onClick={() => handleEditContact(contact._id)}>
-                                        Upravit
-                                    </Button>
-                                    <Button size="small" onClick={() => handleViewDetails(contact._id)}>
-                                        Zobrazit detaily
-                                    </Button>
-                                </CardActions>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
+                {/* Zobrazení všech kontaktů */}
+                <Box sx={{ padding: 2 }}>
+                    <Grid container spacing={3}> {/* Používáme Grid pro rozložení kontaktů */}
+                        {filteredContacts.map((contact) => (
+                            <Grid item xs={12} sm={6} md={4} key={contact._id}> {/* Upravujeme velikosti pro různé obrazovky */}
+                                <ContactCard contact={contact} />
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
             </Box>
         </Container>
+
     );
 };
 
