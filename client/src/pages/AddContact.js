@@ -3,11 +3,12 @@ import React, { useState } from 'react';
 import axios from 'axios'; // Import axios
 import { TextField, Button, Container, Typography, Box, MenuItem, Select, InputLabel, FormControl, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useUser } from '../context/UserContext';
 
 const AddContact = () => {
+    const { userId } = useUser();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [photo, setPhoto] = useState(null);
     const [contactSource, setContactSource] = useState('');
     const [company, setCompany] = useState('');
     const [position, setPosition] = useState('');
@@ -22,14 +23,16 @@ const AddContact = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const userId = localStorage.getItem('userId'); // Získání userId z localStorage
+        if (!userId) {
+            console.error('Uživatelské ID není dostupné.');
+            return;
+        }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/contacts', {
+            const newContact = {
                 userId,
                 firstName,
                 lastName,
-                photo,
                 contactSource,
                 company,
                 position,
@@ -38,13 +41,23 @@ const AddContact = () => {
                 hobbies,
                 discussionTopics,
                 avoidTopics,
+            };
+
+            const response = await axios.post('http://localhost:5000/api/newContact', newContact, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             });
-            // Přesměrování na dashboard nebo jinou stránku
+
             console.log('Kontakt přidán:', response.data);
+            navigate('/dashboard'); // Přesměrování na dashboard po úspěšném přidání
         } catch (error) {
             console.error('Chyba při přidávání kontaktu:', error);
+            alert('Došlo k chybě při přidávání kontaktu. Zkontrolujte konzoli pro více informací.');
         }
     };
+
+
 
 
     return (
@@ -66,7 +79,6 @@ const AddContact = () => {
                             <input
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => setPhoto(e.target.files[0])}
                                 style={{ marginBottom: '16px' }}
                             />
                         </Grid>

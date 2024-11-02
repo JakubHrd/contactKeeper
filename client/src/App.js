@@ -7,6 +7,8 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import { UserProvider } from './context/UserContext';
 import AddContact from "./pages/AddContact";
+import ContactDetails from './pages/ContactDetails';
+import EditContact from './pages/EditContact';
 
 const App = () => {
     return (
@@ -18,6 +20,8 @@ const App = () => {
                     <Route path="/register" element={<Register />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/add-contact" element={<AddContact />} />
+                    <Route path="/contact-details/:contactId" element={<ContactDetails />} />
+                    <Route path="/edit-contact/:contactId" element={<EditContact />} />
                 </Routes>
             </Router>
         </UserProvider>

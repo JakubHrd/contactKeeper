@@ -29,19 +29,51 @@ const Navbar = () => {
     };
 
     return (
-        <AppBar position="static">
+        <AppBar
+            position="static"
+            sx={{
+                background: 'linear-gradient(90deg, #1e90ff, #32cd32)', // gradient s modrou, zelenou a oranžovou
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)', // jemný stín
+            }}
+        >
             <Toolbar>
-                <Typography variant="h6">ContactKeeper</Typography>
-                <Box sx={{ marginLeft: 'auto' }}> {/* Flexbox pro umístění napravo */}
+                <Typography
+                    variant="h6"
+                    sx={{
+                        flexGrow: 1,
+                        fontWeight: 'bold',
+                        letterSpacing: '1px',
+                    }}
+                >
+                    ContactKeeper
+                </Typography>
+                <Box sx={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
                     {userName ? (
                         <>
-                            <StyledButton onClick={handleMenuClick}>
+                            <StyledButton
+                                onClick={handleMenuClick}
+                                sx={{
+                                    color: '#fff',
+                                    textTransform: 'none',
+                                    fontWeight: 'bold',
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                    },
+                                }}
+                            >
                                 {userName}
                             </StyledButton>
                             <Menu
                                 anchorEl={anchorEl}
                                 open={Boolean(anchorEl)}
                                 onClose={handleMenuClose}
+                                sx={{
+                                    mt: 2,
+                                    '& .MuiPaper-root': {
+                                        borderRadius: '8px',
+                                        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.15)',
+                                    },
+                                }}
                             >
                                 <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
                                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
@@ -49,10 +81,31 @@ const Navbar = () => {
                         </>
                     ) : (
                         <>
-                            <StyledButton href="/" sx={{ marginRight: 2 }}>
+                            <StyledButton
+                                href="/"
+                                sx={{
+                                    color: '#fff',
+                                    textTransform: 'none',
+                                    fontWeight: 'bold',
+                                    marginRight: 2,
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                    },
+                                }}
+                            >
                                 Login
                             </StyledButton>
-                            <StyledButton href="/register">
+                            <StyledButton
+                                href="/register"
+                                sx={{
+                                    color: '#fff',
+                                    textTransform: 'none',
+                                    fontWeight: 'bold',
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                    },
+                                }}
+                            >
                                 Register
                             </StyledButton>
                         </>
