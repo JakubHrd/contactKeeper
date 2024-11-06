@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import ContactSection from "../components/ContactSection";
 import ContactCard from "../components/ContactCard";
+import { motion } from 'framer-motion';
+
 
 const Dashboard = () => {
     const { userId } = useUser();
@@ -42,12 +44,21 @@ const Dashboard = () => {
     const filteredContacts = contacts.filter(contact => contact.contactSource === selectedCategory);
 
     return (
-        <Container sx={{ display: 'flex', minHeight: '100vh', paddingTop: 3, width: '100%', maxWidth: 'none' }}>
+        <Container sx={{ display: 'flex', minHeight: '100vh', paddingTop: 3, minWidth: '100%', p:0 , m:0 }}>
             {/* Levý panel jako samostatná sekce */}
             <Box sx={{ width: '20%', padding: 2, borderRight: '1px solid #ddd' }}>
                 <Stack spacing={2}> {/* Použijeme Stack pro vertikální uspořádání */}
+                    <motion.div whileHover={{ scale: 1.05 }}>
                     <Button
-                        sx={{ borderRadius: 10, boxShadow: 3 }}
+                        sx={{
+                            borderRadius: 10,
+                            boxShadow: 3,
+                            transition: 'all 0.3s ease-in-out',
+                            '&:hover': {
+                                boxShadow: 5,
+                                backgroundColor: '#5c6bc0', // Změna barvy při hoveru
+                            },
+                        }}
                         variant="contained"
                         color="primary"
                         onClick={handleAddContact}
@@ -55,25 +66,34 @@ const Dashboard = () => {
                     >
                         Přidat nový kontakt
                     </Button>
+                    </motion.div>
                     <Divider />
 
                     {/* Seznam kategorií jako tlačítka */}
                     {Object.keys(contactCategories).map((categoryKey) => (
+                        <motion.div key={categoryKey} whileHover={{ scale: 1.05 }}>
                         <Button
                             key={categoryKey}
                             variant="outlined" // Tlačítka jako obrysová pro lepší vzhled
                             fullWidth
                             onClick={() => setSelectedCategory(categoryKey)}
                             sx={{
-                                textAlign: 'left', // Zarovnáme text doleva
-                                borderColor: selectedCategory === categoryKey ? '#1976d2' : '#ddd', // Změna barvy okraje vybrané kategorie
+                                textAlign: 'left',
+                                borderColor: selectedCategory === categoryKey ? '#1976d2' : '#ddd',
                                 color: selectedCategory === categoryKey ? '#1976d2' : 'inherit',
                                 borderRadius: 10,
-                                boxShadow: 3,// Změna barvy textu vybrané kategorie
+                                boxShadow: 3,
+                                transition: 'all 0.3s ease-in-out',
+                                '&:hover': {
+                                    borderColor: '#1976d2',
+                                    boxShadow: 4,
+                                    color: '#1976d2',
+                                },
                             }}
                         >
                             {contactCategories[categoryKey]}
                         </Button>
+                        </motion.div>
                     ))}
                 </Stack>
             </Box>
@@ -88,8 +108,10 @@ const Dashboard = () => {
                 <Box sx={{ padding: 2 }}>
                     <Grid container spacing={3}> {/* Používáme Grid pro rozložení kontaktů */}
                         {filteredContacts.map((contact) => (
-                            <Grid item xs={12} sm={6} md={4} key={contact._id}> {/* Upravujeme velikosti pro různé obrazovky */}
-                                <ContactCard contact={contact} />
+                            <Grid item xs={12} sm={6} md={6} lg={4} xl={3} key={contact._id}> {/* Upravujeme velikosti pro různé obrazovky */}
+                                <motion.div whileHover={{ scale: 1.05 }}>
+                                    <ContactCard contact={contact} />
+                                </motion.div>
                             </Grid>
                         ))}
                     </Grid>
